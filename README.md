@@ -341,6 +341,32 @@ WHERE log_reuse_wait_desc <> 'NOTHING';
 
 ---
 
+## Recommendations
+
+Based on the investigation, the following actions are recommended before any cleanup is performed:
+
+1. **Schedule a maintenance window** — C:\ is critically low at 3.24 GB free. This should be treated as urgent.
+2. **Involve the DBA team** before touching anything under `C:\Install\` or SQL log files.
+3. **Start with zero-risk items first** — SoftwareDistribution, Temp files, and User Downloads require no approvals.
+4. **Use built-in tools** (DISM, Octopus retention policy) rather than manual deletion where possible.
+5. **Export event logs** before clearing, especially on a production server.
+6. **Archive `C:\Install\` to a network share** rather than deleting outright — keeps a safety copy.
+
+---
+
+## Before & After Estimate
+
+| Scenario | Free Space on C:\ | % Free |
+|----------|-------------------|--------|
+| Current (no action) | 3.24 GB | 4% 🔴 |
+| After zero-risk cleanup only (items 1, 6, 7) | ~8.75 GB | ~11% 🟡 |
+| After all recommended cleanup (items 1–7) | ~17–19 GB | ~21–24% 🟢 |
+| After all cleanup including SQL review | ~17–19 GB+ | ~21%+ 🟢 |
+
+> General best practice is to keep at least 15–20% free on a system drive. The target should be a minimum of 12 GB free on this 80 GB C:\ drive.
+
+---
+
 ## Notes
 
 - Investigation performed on a Windows Server with SQL Server 2019 installed
